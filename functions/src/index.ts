@@ -21,8 +21,9 @@ async function assertUserIsAdmin(context: CallableContext) {
     }
 }
 
-export const setFirstUserAsAdmin = functions.firestore
-    .document("/users/{uid}")
+export const setFirstUserAsAdmin = functions
+    .region("europe-west3")
+    .firestore.document("/users/{uid}")
     .onCreate(async (snapshot, context) => {
         const users = await db.collection("users").get();
         const numUsers = users.size;
@@ -47,8 +48,9 @@ interface Snappable {
     username: string;
 }
 
-export const uploadSnappableList = functions.https.onCall(
-    async (data, context) => {
+export const uploadSnappableList = functions
+    .region("europe-west3")
+    .https.onCall(async (data, context) => {
         if (!Array.isArray(data)) {
             throw new functions.https.HttpsError(
                 "failed-precondition",
@@ -109,5 +111,4 @@ export const uploadSnappableList = functions.https.onCall(
 
         await bulkWriter.close();
         return { result: "success" };
-    }
-);
+    });
